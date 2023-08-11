@@ -8,6 +8,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.util.Optional;
 
 @Service
 public class ImageService {
@@ -16,7 +18,7 @@ public class ImageService {
     private ImageDataRepository repository;
 
     public String uploadImage(MultipartFile file) throws IOException {
-        String filePath = "C:\\Users\\User\\Desktop\\WebGallery\\src\\main\\resources\\static\\images\\" + file.getOriginalFilename();
+        String filePath = "\\C:\\Users\\adamj\\Pictures\\web-photos\\" + file.getOriginalFilename();
 
         ImageData imageData = repository.save(ImageData.builder()
                 .name(file.getOriginalFilename())
@@ -31,5 +33,12 @@ public class ImageService {
         } else {
             return "Image upload failed";
         }
+    }
+
+    public byte[] getImage(String fileName) throws IOException {
+        Optional<ImageData> ImageData = repository.findByName(fileName);
+        String filePath = ImageData.get().getPath();
+        byte[] images = Files.readAllBytes(new File(filePath).toPath());
+        return images;
     }
 }
