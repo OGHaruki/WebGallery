@@ -20,4 +20,8 @@ public class ImageData {
     private String name;
     private String type;
     private String path;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
 }
