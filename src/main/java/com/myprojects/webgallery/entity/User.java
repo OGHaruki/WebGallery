@@ -1,15 +1,12 @@
 package com.myprojects.webgallery.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.Set;
 
 @Entity
-@Table(name = "User", uniqueConstraints = {
+@Table(name = "UserData", uniqueConstraints = {
         @UniqueConstraint(columnNames = {"username"})})
 @Data
 @AllArgsConstructor
@@ -17,6 +14,7 @@ import java.util.Set;
 @Builder
 public class User {
 
+    @Getter
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -25,6 +23,6 @@ public class User {
     @Column(nullable = false)
     private String password;
 
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "owner", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Set<ImageData> images;
 }
