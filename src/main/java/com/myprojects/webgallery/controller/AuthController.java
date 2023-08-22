@@ -61,4 +61,11 @@ public class AuthController {
 
         return new ResponseEntity<>("User registered successfully", HttpStatus.OK);
     }
+
+    @GetMapping("/auth")
+    public ResponseEntity<?> authUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        System.out.println(authentication.getName());
+        return new ResponseEntity<>("User authenticated successfully", HttpStatus.OK);
+    }
 }
