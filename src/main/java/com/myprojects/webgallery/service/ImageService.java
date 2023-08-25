@@ -67,7 +67,7 @@ public class ImageService {
         return images;
     }
 
-    public List<byte[]> getAllImages() throws IOException {
+    /*public List<byte[]> getAllImages() throws IOException {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentPrincipalName = authentication.getName();
         User user = userRepository.findByUsername(currentPrincipalName)
@@ -80,5 +80,5 @@ public class ImageService {
         }
 
         return images;
-    }
+    }*/
 }

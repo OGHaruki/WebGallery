@@ -18,7 +18,7 @@ import java.util.function.Function;
 @Service
 public class JwtService {
 
-    private final static String SECRET_KEY = "79272AFA898D3AA39723C1A73C6DD";
+    private final static String SECRET_KEY = "vXRu3I6BChCDnL/JUcKWMnXTeoaMIzyr5BNx1U0ZhfgTKN+rwDT3eYYJWRiFu77NqLkNTWOKLSUla5NYX5rOKm/wyX21/QdS4p3Kx4LNKI8=\n";
 
     public String generateToken(UserDetails userDetails) {
         return generateToken(new HashMap<>(), userDetails);
@@ -34,7 +34,7 @@ public class JwtService {
                 .setSubject(userDetails.getUsername())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 24))
-                .signWith(getSignIngKey(), SignatureAlgorithm.ES256)
+                .signWith(getSignIngKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
 
