@@ -8,20 +8,23 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "TokenData")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@Table(name = "TokenData")
 public class Token {
 
     @Id
+    @GeneratedValue
     private Long id;
+
+    @Column(unique = true)
     private String token;
     private boolean expired;
     private boolean revoked;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
-    User user;
+    public User user;
 }
