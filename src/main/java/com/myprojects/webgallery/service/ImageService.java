@@ -33,14 +33,6 @@ public class ImageService {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        if (authentication != null) {
-            for (GrantedAuthority authority : authentication.getAuthorities()) {
-                System.out.println("Uprawnienie: " + authority.getAuthority());
-            }
-        } else {
-            System.out.println("Użytkownik nie jest uwierzytelniony.");
-        }
-
         String currentPrincipalName = authentication.getName();
         User user = userRepository.findByUsername(currentPrincipalName)
                 .orElseThrow(() -> new UsernameNotFoundException("User Not Found with username: " + currentPrincipalName));
