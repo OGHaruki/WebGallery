@@ -8,23 +8,30 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
 
 @RestController
-@RequestMapping("/image")
+@RequestMapping("/user")
 public class ImageController {
 
     @Autowired
     private ImageService imageService;
 
-    @PostMapping("/upload")
+    @PostMapping("/image/upload")
     public ResponseEntity<?> uploadImage(@RequestParam("image") MultipartFile file) throws IOException {
         String uploadImage = imageService.uploadImage(file);
         return ResponseEntity.status(200).body(uploadImage);
     }
 
-    @GetMapping("/{fileName}")
+    @GetMapping("/image/{fileName}")
     public ResponseEntity<?> getImage(@PathVariable String fileName) throws IOException{
         byte[] image = imageService.getImage(fileName);
         return ResponseEntity.status(200).contentType(MediaType.valueOf("image/png")).body(image);
+    }
+
+    @GetMapping("/images")
+    public ResponseEntity<?> getImages() throws IOException{
+        List<byte[]> images = imageService.getAllImages();
+        return ResponseEntity.status(200).body(images);
     }
 }

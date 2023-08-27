@@ -4,6 +4,7 @@ import com.myprojects.webgallery.entity.ImageData;
 import com.myprojects.webgallery.entity.User;
 import com.myprojects.webgallery.repository.ImageDataRepository;
 import com.myprojects.webgallery.repository.UserRepository;
+import jakarta.persistence.EntityManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -45,6 +46,10 @@ public class ImageService {
 
         file.transferTo(new File(filePath));
 
+        user.getImages().add(imageData);
+        userRepository.save(user);
+        System.out.println(user.getImages().size());
+
         if(imageData != null) {
             return "Image uploaded successfully : " + filePath;
         } else {
@@ -59,18 +64,19 @@ public class ImageService {
         return images;
     }
 
-    /*public List<byte[]> getAllImages() throws IOException {
+    public List<byte[]> getAllImages() throws IOException {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentPrincipalName = authentication.getName();
         User user = userRepository.findByUsername(currentPrincipalName)
                 .orElseThrow(() -> new UsernameNotFoundException("User Not Found with username: " + currentPrincipalName));
 
         List<byte[]> images = new ArrayList<>();
+        System.out.println(user.getImages().size());
         for(ImageData imageData : user.getImages()) {
             byte[] image = getImage(imageData.getName());
             images.add(image);
-        }
 
+        }
         return images;
-    }*/
+    }
 }
