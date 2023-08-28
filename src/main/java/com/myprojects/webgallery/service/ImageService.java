@@ -2,6 +2,7 @@ package com.myprojects.webgallery.service;
 
 import com.myprojects.webgallery.entity.ImageData;
 import com.myprojects.webgallery.entity.User;
+import com.myprojects.webgallery.payload.ImageDto;
 import com.myprojects.webgallery.repository.ImageDataRepository;
 import com.myprojects.webgallery.repository.UserRepository;
 import jakarta.persistence.EntityManager;
@@ -19,6 +20,7 @@ import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class ImageService {
@@ -30,7 +32,8 @@ public class ImageService {
     private UserRepository userRepository;
 
     public String uploadImage(MultipartFile file) throws IOException {
-        String filePath = "\\C:\\Users\\adamj\\Pictures\\web-photos\\" + file.getOriginalFilename();
+        String uniqueFileName = UUID.randomUUID() + "-" + file.getOriginalFilename();
+        String filePath = "\\C:\\Users\\adamj\\Pictures\\web-photos\\" + uniqueFileName;
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
@@ -57,25 +60,38 @@ public class ImageService {
         }
     }
 
-    public byte[] getImage(String fileName) throws IOException {
-        Optional<ImageData> ImageData = imageRepository.findByName(fileName);
+    public byte[] getImage(UUID uuid) throws IOException {
+        Optional<ImageData> ImageData = imageRepository.findById(uuid);
         String filePath = ImageData.get().getPath();
         byte[] images = Files.readAllBytes(new File(filePath).toPath());
         return images;
     }
 
-    public List<byte[]> getAllImages() throws IOException {
+    public ImageDto getImageDto(UUID uuid) throws IOException {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentPrincipalName = authentication.getName();
         User user = userRepository.findByUsername(currentPrincipalName)
                 .orElseThrow(() -> new UsernameNotFoundException("User Not Found with username: " + currentPrincipalName));
 
-        List<byte[]> images = new ArrayList<>();
-        System.out.println(user.getImages().size());
-        for(ImageData imageData : user.getImages()) {
-            byte[] image = getImage(imageData.getName());
-            images.add(image);
+        Optional<ImageData> imageData = imageRepository.findById(uuid);
+        ImageDto imageDto = new ImageDto();
+        imageDto.setName(imageData.get().getName());
+        imageDto.setPath(imageData.get().getPath());
+        return imageDto;
+    }
 
+    public List<ImageDto> getAllImages() throws IOException {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentPrincipalName = authentication.getName();
+        User user = userRepository.findByUsername(currentPrincipalName)
+                .orElseThrow(() -> new UsernameNotFoundException("User Not Found with username: " + currentPrincipalName));
+
+        List<ImageDto> images = new ArrayList<>();
+        for(ImageData imageData : user.getImages()) {
+            ImageDto imageDto = new ImageDto();
+            imageDto.setName(imageData.getName());
+            imageDto.setPath(imageData.getPath());
+            images.add(imageDto);
         }
         return images;
     }
